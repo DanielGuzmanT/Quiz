@@ -19,9 +19,28 @@ class _QuizPageState extends State<QuizPage> {
     new Question("Tomorrow is Saturday", false),
   ]);
 
+  Question currentQuestion;
   String questionText;
   int questionNumber;
   bool isCorrect;
+  bool overlayShouldBeVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    currentQuestion = quiz.nextQuestion;
+    questionText = currentQuestion.question;
+    questionNumber = quiz.questionNumber;
+  }
+
+  void handleAnswer(bool answer) {
+    isCorrect = (currentQuestion.answer == answer);
+    quiz.answer(isCorrect);
+    print(isCorrect);
+    this.setState(() {
+      overlayShouldBeVisible = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +49,14 @@ class _QuizPageState extends State<QuizPage> {
       children: <Widget>[
         new Column(
           children: <Widget>[
-            new AnswerButton(true, () => print("True men")),
-            new QuestionText("Pizza is awful", 2),
-            new AnswerButton(false, () => print("False men")),
+            new AnswerButton(true, () => handleAnswer(true)),
+            new QuestionText(questionText, questionNumber),
+            new AnswerButton(false, () => handleAnswer(false)),
           ],
         ),
-        new CorrectWrongOverlay(false),
+        overlayShouldBeVisible
+            ? new CorrectWrongOverlay(isCorrect)
+            : new Container(),
       ],
     );
   }
