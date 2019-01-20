@@ -15,12 +15,10 @@ class Quiz {
   int get questionNumber => _currentQuestionIndex + 1;
 
   Question get nextQuestion {
-    if (_currentQuestionIndex >= length)
-      return null;
-    else {
-      _currentQuestionIndex++;
-      return _questions[_currentQuestionIndex];
-    }
+    _currentQuestionIndex++;
+    return _currentQuestionIndex >= length
+        ? null
+        : _questions[_currentQuestionIndex];
   }
 
   void answer(bool isCorrect) {
