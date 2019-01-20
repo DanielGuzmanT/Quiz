@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quizz/UI/answer_button.dart';
 import 'package:quizz/UI/correct_wrong_overlay.dart';
 import 'package:quizz/UI/question_text.dart';
+import 'package:quizz/pages/score_page.dart';
 import 'package:quizz/utils/Question.dart';
 import 'package:quizz/utils/Quiz.dart';
 
@@ -40,6 +41,18 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void chargeQuestion() {
+    // in case that there aren't more questions to answer, it'll show the score
+    if (quiz.length == questionNumber) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  new ScorePage(quiz.score, quiz.length)),
+          (Route route) => route == null);
+
+      return;
+    }
+
+    // more questions to answer
     overlayShouldBeVisible = false;
     currentQuestion = quiz.nextQuestion;
     questionText = currentQuestion.question;
