@@ -23,23 +23,27 @@ class _QuizPageState extends State<QuizPage> {
   String questionText;
   int questionNumber;
   bool isCorrect;
-  bool overlayShouldBeVisible = false;
+  bool overlayShouldBeVisible;
 
   @override
   void initState() {
     super.initState();
-    currentQuestion = quiz.nextQuestion;
-    questionText = currentQuestion.question;
-    questionNumber = quiz.questionNumber;
+    chargeQuestion();
   }
 
   void handleAnswer(bool answer) {
     isCorrect = (currentQuestion.answer == answer);
     quiz.answer(isCorrect);
-    print(isCorrect);
     this.setState(() {
       overlayShouldBeVisible = true;
     });
+  }
+
+  void chargeQuestion() {
+    overlayShouldBeVisible = false;
+    currentQuestion = quiz.nextQuestion;
+    questionText = currentQuestion.question;
+    questionNumber = quiz.questionNumber;
   }
 
   @override
@@ -55,7 +59,10 @@ class _QuizPageState extends State<QuizPage> {
           ],
         ),
         overlayShouldBeVisible
-            ? new CorrectWrongOverlay(isCorrect)
+            ? new CorrectWrongOverlay(
+                isCorrect,
+                () => this.setState(() => chargeQuestion()),
+              )
             : new Container(),
       ],
     );
